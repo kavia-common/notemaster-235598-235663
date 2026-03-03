@@ -154,3 +154,14 @@ echo "To use with Node.js viewer, run: source db_visualizer/postgres.env"
 echo "To connect to the database, use one of the following commands:"
 echo "psql -h localhost -U ${DB_USER} -d ${DB_NAME} -p ${DB_PORT}"
 echo "$(cat db_connection.txt)"
+
+# Initialize NoteMaster schema + seed (idempotent).
+# Uses db_connection.txt convention so it works in this container environment.
+if [ -f "./init_notes_app_db.sh" ]; then
+    echo ""
+    echo "Applying NoteMaster schema + seed..."
+    chmod +x ./init_notes_app_db.sh
+    ./init_notes_app_db.sh || echo "⚠ NoteMaster init script failed (see output above)."
+else
+    echo "⚠ init_notes_app_db.sh not found; skipping NoteMaster schema initialization."
+fi
